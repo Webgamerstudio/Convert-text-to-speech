@@ -75,6 +75,19 @@
             margin: 0 auto;
         }
 
+        /* Ad Container */
+        .ad-container {
+            margin: 20px auto;
+            text-align: center;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .ad-container iframe {
+            display: block;
+            margin: 0 auto;
+        }
+
         /* Navigation Tabs */
         .tabs {
             display: grid;
@@ -502,6 +515,16 @@
             .stats {
                 grid-template-columns: 1fr;
             }
+
+            .ad-container {
+                max-width: 100%;
+            }
+
+            .ad-container iframe {
+                width: 100%;
+                max-width: 320px;
+                height: auto;
+            }
         }
 
         @media (max-width: 480px) {
@@ -521,6 +544,12 @@
             
             .header p {
                 font-size: 14px;
+            }
+
+            .ad-container iframe {
+                width: 100%;
+                max-width: 320px;
+                height: 50px; /* Default to smallest ad height for mobile */
             }
         }
 
@@ -542,6 +571,9 @@
             </h1>
             <p>Convert your text to natural speech in multiple languages including Bengali, English, Hindi and more</p>
         </header>
+
+        <!-- Ad Container -->
+        <div class="ad-container" id="adContainer"></div>
 
         <!-- Navigation Tabs -->
         <nav class="tabs" role="navigation">
@@ -706,7 +738,57 @@
     </div>
 
     <script>
-        // Global variables
+        // Ad configurations
+        const adConfigs = [
+            {
+                key: '63718988f07bc6d276f3c6a441757cae',
+                format: 'iframe',
+                height: 90,
+                width: 728,
+                params: {},
+                scriptSrc: '//www.highperformanceformat.com/63718988f07bc6d276f3c6a441757cae/invoke.js'
+            },
+            {
+                key: 'c620af328467e6de19dc04af696ee0fb',
+                format: 'iframe',
+                height: 250,
+                width: 300,
+                params: {},
+                scriptSrc: '//www.highperformanceformat.com/c620af328467e6de19dc04af696ee0fb/invoke.js'
+            },
+            {
+                key: '78ade24182729fceea8e45203dad915b',
+                format: 'iframe',
+                height: 50,
+                width: 320,
+                params: {},
+                scriptSrc: '//www.highperformanceformat.com/78ade24182729fceea8e45203dad915b/invoke.js'
+            }
+        ];
+
+        // Function to load a random ad
+        function loadRandomAd() {
+            const adContainer = document.getElementById('adContainer');
+            const randomIndex = Math.floor(Math.random() * adConfigs.length);
+            const selectedAd = adConfigs[randomIndex];
+
+            // Set global atOptions
+            window.atOptions = {
+                key: selectedAd.key,
+                format: selectedAd.format,
+                height: selectedAd.height,
+                width: selectedAd.width,
+                params: selectedAd.params
+            };
+
+            // Create and append script tag
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = selectedAd.scriptSrc;
+            adContainer.appendChild(script);
+        }
+
+        // Global variables for TTS
         let synth;
         let utterance;
         let voices = [];
@@ -720,6 +802,7 @@
             loadHistory();
             updateStats();
             updateCharCount();
+            loadRandomAd(); // Load a random ad
         });
 
         // Initialize Text to Speech
